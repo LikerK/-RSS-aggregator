@@ -1,40 +1,49 @@
 {
-  "name": "rss-aggregator",
+  "name": "hexlet-project",
   "version": "1.0.0",
-  "description": "This project has been created using **webpack-cli**, you can now run",
-  "main": "src/init.js",
+  "description": "",
+  "main": "webpack.config.js",
   "scripts": {
-    "build": "NODE_ENV=production webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LikerK/RSS-aggregator.git"
+  },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LikerK/RSS-aggregator/issues"
+  },
+  "homepage": "https://github.com/LikerK/RSS-aggregator#readme",
   "devDependencies": {
-    "@babel/core": "^7.21.0",
-    "@babel/eslint-parser": "^7.19.1",
-    "@babel/preset-env": "^7.20.2",
+    "@babel/core": "^7.22.5",
+    "@babel/eslint-parser": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
     "babel-loader": "^9.1.2",
-    "css-loader": "^6.7.3",
+    "css-loader": "^6.8.1",
     "debug": "^4.3.4",
-    "eslint": "^8.34.0",
+    "eslint": "^8.43.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-import": "^2.27.5",
     "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^5.5.0",
-    "postcss-loader": "^7.0.2",
-    "postcss-preset-env": "^8.0.1",
-    "style-loader": "^3.3.1",
+    "html-webpack-plugin": "^5.5.3",
+    "postcss-loader": "^7.3.3",
+    "postcss-preset-env": "^8.5.1",
+    "style-loader": "^3.3.3",
     "url-loader": "^4.1.1",
-    "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1",
-    "webpack-dev-server": "^4.11.1"
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "bootstrap": "^5.3.0-alpha1",
-    "sass": "^1.58.3",
-    "sass-loader": "^13.2.0"
+    "bootstrap": "^5.3.0",
+    "i18next": "^23.2.3",
+    "on-change": "^4.0.2",
+    "sass": "^1.63.6",
+    "sass-loader": "^13.3.2",
+    "yup": "^1.2.0"
   }
 }

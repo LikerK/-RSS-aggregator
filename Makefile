@@ -7,6 +7,5 @@ install:
 build:
 	NODE_ENV=production npx webpack
 
-
 lint:
 	npx eslint .
