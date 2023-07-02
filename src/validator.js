@@ -1,7 +1,10 @@
 import { object, string, setLocale } from 'yup';
 import i18next from 'i18next';
+import axios from 'axios';
+import { uniqueId } from 'lodash';
 import watch from './view.js';
 import resources from './locales/index.js';
+import parser from './parser.js';
 
 export default async () => {
   const initialState = {
@@ -10,6 +13,8 @@ export default async () => {
       error: '',
       valid: false,
       url: '',
+      posts: [],
+      feeds: [],
     },
   };
 
@@ -38,6 +43,33 @@ export default async () => {
     url: string().url().nullable(),
   });
 
+  const addProxy = (url) => {
+    const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app');
+    proxyUrl.searchParams.append('disableCache', 'true');
+    proxyUrl.searchParams.append('url', url);
+    return proxyUrl.toString();
+  };
+
+  const getDate = (url) => axios.get(addProxy(url));
+
+  const addIdsForPosts = (posts, feedId) => {
+    const newPosts = posts.map((post) => {
+      const newPost = post;
+      newPost.id = uniqueId();
+      newPost.feedId = feedId;
+      return newPost;
+    });
+    return newPosts;
+  };
+
+  const handleData = (data) => {
+    const { feed, posts } = data;
+    feed.id = uniqueId();
+    watchedState.form.feeds.push(feed);
+    const newPosts = addIdsForPosts(posts, feed.id);
+    watchedState.form.posts.push(...newPosts);
+  };
+
   elements.form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = new FormData(elements.form);
@@ -45,7 +77,14 @@ export default async () => {
     try {
       await schema.validate(newUser, { abortEarly: false });
       watchedState.form.valid = true;
+      const text = data.get('url');
+      const response = await getDate(text);
+      const content = response.data.contents;
+      const url = data.get('url');
+      const dateParser = parser(content, url);
+      handleData(dateParser);
     } catch (error) {
+      console.log(error);
       watchedState.form.errors = error.name;
       watchedState.form.valid = false;
     }
