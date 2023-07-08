@@ -1,5 +1,5 @@
 # RSS reader
-[![Maintainability](https://api.codeclimate.com/v1/badges/85afdad7d3634e41e5c7/maintainability)](https://codeclimate.com/github/philologistIsCodingHere/frontend-project-11/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/ec5f0391f234ed1064c0/maintainability)](https://codeclimate.com/github/LikerK/RSS-reader/maintainability)
 [![linter CI](https://github.com/LikerK/RSS-aggregator/actions/workflows/mylinter.yml/badge.svg)](https://github.com/LikerK/RSS-aggregator/actions/workflows/mylinter.yml)
 
 ### Description:
