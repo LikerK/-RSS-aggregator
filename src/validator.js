@@ -11,7 +11,7 @@ export default async () => {
     form: {
       lng: 'ru',
       error: '',
-      valid: false,
+      feedback: '',
       url: '',
       posts: [],
       feeds: [],
@@ -26,9 +26,16 @@ export default async () => {
   });
 
   setLocale({
-    mixed: {
-      url: () => ({ key: 'errors.ValidationError' }),
+    string: {
+      url: () => ({ key: 'notUrl' }),
     },
+    mixed: {
+      notOneOf: () => ({ key: 'alreadyInList' }),
+    },
+  });
+
+  const makeSchema = (links) => object().shape({
+    url: string().url().nullable().notOneOf(links),
   });
 
   const elements = {
@@ -38,10 +45,6 @@ export default async () => {
   };
 
   const watchedState = watch(elements, initialState, i18n);
-
-  const schema = object().shape({
-    url: string().url().nullable(),
-  });
 
   const addProxy = (url) => {
     const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app');
@@ -62,6 +65,10 @@ export default async () => {
     return newPosts;
   };
 
+  // const updatePosts = async (posts, feeds) => {
+
+  // }
+
   const handleData = (data) => {
     const { feed, posts } = data;
     feed.id = uniqueId();
@@ -70,11 +77,23 @@ export default async () => {
     watchedState.form.posts.push(...newPosts);
   };
 
+  const handleError = (error) => {
+    if (error.isParsingError) {
+      return 'notRss';
+    }
+    if (axios.isAxiosError(error)) {
+      return 'networkError';
+    }
+    return error.message.key ?? 'unknown';
+  };
+
   elements.form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = new FormData(elements.form);
     const newUser = Object.fromEntries(data);
     try {
+      const links = initialState.form.feeds.map((feed) => feed.link);
+      const schema = makeSchema(links);
       await schema.validate(newUser, { abortEarly: false });
       watchedState.form.valid = true;
       const text = data.get('url');
@@ -82,10 +101,11 @@ export default async () => {
       const content = response.data.contents;
       const url = data.get('url');
       const dateParser = parser(content, url);
+      watchedState.form.feedback = 'success';
       handleData(dateParser);
     } catch (error) {
       console.log(error);
-      watchedState.form.errors = error.name;
+      watchedState.form.feedback = handleError(error);
       watchedState.form.valid = false;
     }
   });

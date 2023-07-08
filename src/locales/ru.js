@@ -6,9 +6,11 @@ export default {
     view: 'Просмотр',
     posts: 'Посты',
     feeds: 'Фиды',
-    errors: {
-      ValidationError: 'Введите валидный URL',
-      Error: 'RSS отсутствует!',
+    feedback: {
+      notUrl: 'Введите валидный URL',
+      notRss: 'RSS отсутствует',
+      success: 'RSS успешно загружен',
+      alreadyInList: 'RSS уже существует',
     },
   },
 };

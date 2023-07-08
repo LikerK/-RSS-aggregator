@@ -2,9 +2,17 @@ import onChange from 'on-change';
 
 export default (elements, state, i18n) => {
   const { input, feedback } = elements;
-  const handleErrors = (key) => {
-    input.classList.add('is-invalid');
-    feedback.textContent = i18n.t(`errors.${key}`);
+  const renderFeedback = (message) => {
+    if (message === 'success') {
+      input.classList.remove('is-invalid');
+      feedback.classList.remove('text-danger');
+      feedback.classList.add('text-success');
+    } else {
+      input.classList.add('is-invalid');
+      feedback.classList.remove('text-success');
+      feedback.classList.add('text-danger');
+    }
+    feedback.textContent = i18n.t(`feedback.${message}`);
   };
 
   const createList = (title) => {
@@ -59,11 +67,6 @@ export default (elements, state, i18n) => {
     return item;
   };
 
-  const clearErrors = () => {
-    feedback.textContent = '';
-    input.classList.remove('is-invalid');
-  };
-
   const createFeed = (feed) => {
     const item = document.createElement('li');
     const title = document.createElement('h3');
@@ -81,7 +84,6 @@ export default (elements, state, i18n) => {
   };
 
   const renderFeeds = (feeds) => {
-    console.log(feeds);
     const feedsElement = document.querySelector('.feeds');
     feedsElement.innerHTML = '';
     feedsElement.append(createList('feeds'));
@@ -99,13 +101,8 @@ export default (elements, state, i18n) => {
 
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
-      case 'form.errors':
-        handleErrors(value);
-        break;
-      case 'form.valid':
-        if (value) {
-          clearErrors();
-        }
+      case 'form.feedback':
+        renderFeedback(value);
         break;
       case 'form.posts':
         renderPosts(value);
