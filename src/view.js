@@ -99,6 +99,15 @@ export default (elements, state, i18n) => {
     posts.forEach((post) => list.append(cretePost(post)));
   };
 
+  const renderDisplayPost = (post) => {
+    const [{ title, description, link }] = post;
+    const modal = elements.modal
+    modal.title.textContent = title;
+    modal.description.textContent = description;
+    modal.link.setAttribute('href', link);
+    console.log(description);
+  }
+
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
       case 'form.feedback':
@@ -110,6 +119,8 @@ export default (elements, state, i18n) => {
       case 'form.feeds':
         renderFeeds(value);
         break;
+      case 'form.displayedPost':
+        renderDisplayPost(value);
       default:
         break;
     }
