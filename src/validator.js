@@ -4,7 +4,7 @@ import axios from 'axios';
 import { uniqueId } from 'lodash';
 import watch from './view.js';
 import resources from './locales/index.js';
-import parser from './parser.js';
+import parse from './parser.js';
 
 export default async () => {
   const initialState = {
@@ -15,6 +15,7 @@ export default async () => {
       url: '',
       posts: [],
       feeds: [],
+      displayedPost: {},
     },
   };
 
@@ -42,6 +43,13 @@ export default async () => {
     input: document.getElementById('url-input'),
     form: document.querySelector('form'),
     feedback: document.querySelector('.feedback'),
+    posts: document.querySelector('.posts'),
+    feeds: document.querySelector('.feeds'),
+    modal: {
+      title: document.querySelector('.modal-title'),
+      description: document.querySelector('.modal-body'),
+      link: document.querySelector('.modal-footer a'),
+    },
   };
 
   const watchedState = watch(elements, initialState, i18n);
@@ -53,7 +61,7 @@ export default async () => {
     return proxyUrl.toString();
   };
 
-  const getDate = (url) => axios.get(addProxy(url));
+  const getData = (url) => axios.get(addProxy(url));
 
   const addIdsForPosts = (posts, feedId) => {
     const newPosts = posts.map((post) => {
@@ -65,9 +73,23 @@ export default async () => {
     return newPosts;
   };
 
-  // const updatePosts = async (posts, feeds) => {
-
-  // }
+  const updatePosts = async () => {
+    watchedState.form.feeds.forEach(async (feed) => {
+      try {
+        const response = await getData(feed.link);
+        const { posts } = parse(response.data.contents);
+        const postsFromState = watchedState.form.posts;
+        const postsWithCurrentId = postsFromState.filter((post) => post.feedId === feed.id);
+        const displayedPostLinks = postsWithCurrentId.map((post) => post.link);
+        const newPosts = posts.filter((post) => !displayedPostLinks.includes(post.link));
+        addIdsForPosts(newPosts, feed.id);
+        watchedState.form.posts.unshift(...newPosts);
+      } catch (error) {
+        console.log(error);
+      }
+    })
+    return setTimeout(updatePosts, 5000);
+  }
 
   const handleData = (data) => {
     const { feed, posts } = data;
@@ -97,10 +119,10 @@ export default async () => {
       await schema.validate(newUser, { abortEarly: false });
       watchedState.form.valid = true;
       const text = data.get('url');
-      const response = await getDate(text);
+      const response = await getData(text);
       const content = response.data.contents;
       const url = data.get('url');
-      const dateParser = parser(content, url);
+      const dateParser = parse(content, url);
       watchedState.form.feedback = 'success';
       handleData(dateParser);
     } catch (error) {
@@ -109,4 +131,12 @@ export default async () => {
       watchedState.form.valid = false;
     }
   });
+  elements.posts.addEventListener('click', (e) => {
+    const postId = e.target.dataset.id;
+    if (postId) {
+      const post = watchedState.form.posts.filter((post) => post.id == postId);
+      watchedState.form.displayedPost = post;
+    }
+  });
+  updatePosts();
 };
