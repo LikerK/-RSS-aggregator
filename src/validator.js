@@ -45,11 +45,9 @@ export default async () => {
     feedback: document.querySelector('.feedback'),
     posts: document.querySelector('.posts'),
     feeds: document.querySelector('.feeds'),
-    modal: {
-      title: document.querySelector('.modal-title'),
-      description: document.querySelector('.modal-body'),
-      link: document.querySelector('.modal-footer a'),
-    },
+    modalTitle: document.querySelector('.modal-title'),
+    modalDescription: document.querySelector('.modal-body'),
+    modalLink: document.querySelector('.modal-footer a'),
   };
 
   const watchedState = watch(elements, initialState, i18n);
@@ -87,9 +85,9 @@ export default async () => {
       } catch (error) {
         console.log(error);
       }
-    })
+    });
     return setTimeout(updatePosts, 5000);
-  }
+  };
 
   const handleData = (data) => {
     const { feed, posts } = data;
@@ -134,8 +132,8 @@ export default async () => {
   elements.posts.addEventListener('click', (e) => {
     const postId = e.target.dataset.id;
     if (postId) {
-      const post = watchedState.form.posts.filter((post) => post.id == postId);
-      watchedState.form.displayedPost = post;
+      const postForDisplay = watchedState.form.posts.filter((post) => post.id === postId);
+      watchedState.form.displayedPost = postForDisplay;
     }
   });
   updatePosts();

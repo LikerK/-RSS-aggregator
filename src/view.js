@@ -101,12 +101,11 @@ export default (elements, state, i18n) => {
 
   const renderDisplayPost = (post) => {
     const [{ title, description, link }] = post;
-    const modal = elements.modal
-    modal.title.textContent = title;
-    modal.description.textContent = description;
-    modal.link.setAttribute('href', link);
-    console.log(description);
-  }
+    const { modalTitle, modalDescription, modalLink } = elements;
+    modalTitle.textContent = title;
+    modalDescription.textContent = description;
+    modalLink.setAttribute('href', link);
+  };
 
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
@@ -121,6 +120,7 @@ export default (elements, state, i18n) => {
         break;
       case 'form.displayedPost':
         renderDisplayPost(value);
+        break;
       default:
         break;
     }
