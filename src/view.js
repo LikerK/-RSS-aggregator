@@ -33,7 +33,7 @@ export default (elements, state, i18n) => {
     return card;
   };
 
-  const cretePost = (post) => {
+  const createPost = (post) => {
     const item = document.createElement('li');
     const link = document.createElement('a');
     const button = document.createElement('button');
@@ -83,20 +83,16 @@ export default (elements, state, i18n) => {
     return item;
   };
 
-  const renderFeeds = (feeds) => {
-    const feedsElement = document.querySelector('.feeds');
-    feedsElement.innerHTML = '';
-    feedsElement.append(createList('feeds'));
-    const list = feedsElement.querySelector('ul');
-    feeds.forEach((feed) => list.append(createFeed(feed)));
-  };
-
-  const renderPosts = (posts) => {
-    const postElement = document.querySelector('.posts');
-    postElement.innerHTML = '';
-    postElement.append(createList('posts'));
-    const list = postElement.querySelector('ul');
-    posts.forEach((post) => list.append(cretePost(post)));
+  const renderContent = (items, content) => {
+    const contentElement = document.querySelector(`.${content}`);
+    contentElement.innerHTML = '';
+    contentElement.append(createList(content));
+    const list = contentElement.querySelector('ul');
+    if (content === 'feeds') {
+      items.forEach((feed) => list.append(createFeed(feed)));
+    } else {
+      items.forEach((post) => list.append(createPost(post)));
+    }
   };
 
   const renderDisplayPost = (post) => {
@@ -113,10 +109,10 @@ export default (elements, state, i18n) => {
         renderFeedback(value);
         break;
       case 'form.posts':
-        renderPosts(value);
+        renderContent(value, 'posts');
         break;
       case 'form.feeds':
-        renderFeeds(value);
+        renderContent(value, 'feeds');
         break;
       case 'form.displayedPost':
         renderDisplayPost(value);
